@@ -14,10 +14,6 @@
 # in the appropriate places.
 #
 
-
-
-
-
 def binary_search(list, key):
     #Returns the position of key in the list if found, -1 otherwise.
 
@@ -33,8 +29,10 @@ def binary_search(list, key):
             return middle
         if list[middle] > key:
             right = middle - 1
+            print("Checking the left side")
         if list[middle] < key:
             left = middle + 1
+            print("Checking the right side")
     return -1
 
 print(binary_search([10, 2, 9, 6, 7, 1, 5, 3, 4, 8], 1))
