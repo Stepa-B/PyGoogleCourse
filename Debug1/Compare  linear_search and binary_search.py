@@ -43,7 +43,7 @@ def binary_search(list, key):
         if list[middle] < key:
             left = middle + 1
     return steps
-
+#ad
 
 def best_search(list, key):
     steps_linear = linear_search(list, key)
