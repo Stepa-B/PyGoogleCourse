@@ -21,19 +21,18 @@ def get_start_date():
 
 def get_file_lines(url):
     """Returns the lines contained in the file at the given URL"""
-
-    # Download the file over the internet
-    response = requests.get(url, stream=True)
-    lines = []
-
-    for line in response.iter_lines():
-        lines.append(line.decode("UTF-8"))
+    with requests.Session() as s:
+        download = s.get(FILE_URL)
+        decoded_content = download.content.decode('utf-8')
+        cr = csv.reader(decoded_content.splitlines(), delimiter=',')
+        prelines = list(cr)
+        del prelines[0]
+        lines = sorted(prelines, key=lambda x:x [3])
     return lines
 
 def get_same_or_newer(start_date):
     """Returns the employees that started on the given date, or the closest one."""
-    data = get_file_lines(FILE_URL)
-    reader = csv.reader(data[1:])
+    reader = get_file_lines(FILE_URL)
 
     # We want all employees that started at the same date or the closest newer
     # date. To calculate that, we go through all the data and find the
@@ -66,3 +65,15 @@ def get_same_or_newer(start_date):
 
 def list_newer(start_date):
     while start_date < datetime.datetime.today():
+        start_date, employees = get_same_or_newer(start_date)
+        print("Started on {}: {}".format(start_date.strftime("%b %d, %Y"), employees))
+
+        # Now move the date to the next one
+        start_date = start_date + datetime.timedelta(days=1)
+
+def main():
+    start_date = get_start_date()
+    list_newer(start_date)
+
+if __name__ == "__main__":
+    main()
